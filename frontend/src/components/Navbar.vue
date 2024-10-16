@@ -1,48 +1,65 @@
 <template>
-    <aside class="sidebar">
-      <h2>Dashboard</h2>
-      <ul class="nav-links">
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/analytics">Analytics</router-link></li>
-        <li><router-link to="/ai">AI Feature</router-link></li>
-        <li><router-link to="/settings">Settings</router-link></li>
-      </ul>
-    </aside>
-  </template>
-  
-  <script>
-  export default {};
-  </script>
-  
-  <style scoped>
-  .sidebar {
-    width: 250px;
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px;
-  }
-  
-  .sidebar h2 {
-    color: #ecf0f1;
-  }
-  
-  .nav-links {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .nav-links li {
-    margin-bottom: 15px;
-  }
-  
-  .nav-links a {
-    text-decoration: none;
-    color: #ecf0f1;
-    font-size: 18px;
-  }
-  
-  .nav-links a:hover {
-    color: #3498db;
-  }
-  </style>
-  
+  <body>
+  <nav class="navbar">
+    <h2>Politie Dashboard</h2> <!-- Translated "Dashboard" to Dutch -->
+    <ul class="nav-links">
+      <li><router-link to="/">Home</router-link></li>
+      <li><router-link to="/analytics">Analyse</router-link></li> <!-- Translated "Analytics" to Dutch -->
+      <li><router-link to="/ai">AI Functie</router-link></li> <!-- Translated "AI Feature" to Dutch -->
+      <li><router-link to="/settings">Instellingen</router-link></li> <!-- Translated "Settings" to Dutch -->
+    </ul>
+  </nav>
+  </body>
+</template>
+
+<script>
+export default {
+  name: 'NavBar',
+};
+</script>
+
+<style scoped>
+.navbar {
+  background-color: #003E7E;
+  color: white;
+  padding: 10px 20px; /* Adjusted padding for a balanced appearance */
+  display: flex; /* Makes the navbar flex container */
+  align-items: center; /* Centers the items vertically */
+  justify-content: space-between; /* Separates title and links */
+}
+
+.navbar h2 {
+  color: #F6F8F7;  /* Light color for contrast */
+  margin: 0; /* Removes default margin */
+}
+
+.nav-links {
+  display: flex; /* Aligns links horizontally */
+  list-style-type: none; /* Removes bullet points */
+  margin: 0; /* Removes default margin */
+  padding: 0; /* Removes default padding */
+}
+
+.nav-links li {
+  margin: 0 10px; /* Adds horizontal margin for separation */
+}
+
+.nav-links li:hover{
+  background-color: white;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #F6F8F7; 
+  font-size: 14px;
+}
+
+.nav-links a:hover {
+  color: #3498db; 
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+</style>

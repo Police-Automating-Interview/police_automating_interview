@@ -1,18 +1,12 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/dashboard">Dashboard</router-link>
-  </nav>
+  <NavBar />
   <div class="dashboard-container">
     <!-- Sidebar stays static on all pages -->
     <!-- <Sidebar /> -->
 
     <!-- Main Content -->
     <div class="main-content">
-      <!-- Top Bar stays static on all pages -->
-      <TopBar />
+
 
 
       <!-- Dynamic content from Vue Router -->
@@ -24,12 +18,12 @@
 
 <script>
 // import Sidebar from '@/components/Sidebar.vue';
-import TopBar from '@/components/TopBar.vue';
+import NavBar from '@/components/NavBar.vue';
 
 export default {
   components: {
+    NavBar,
 
-    TopBar,
   },
 };
 </script>
