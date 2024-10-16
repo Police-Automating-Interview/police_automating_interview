@@ -5,8 +5,34 @@
     <router-link to="/login">Login</router-link> |
     <router-link to="/dashboard">Dashboard</router-link>
   </nav>
-  <router-view/>
+  <div class="dashboard-container">
+    <!-- Sidebar stays static on all pages -->
+    <!-- <Sidebar /> -->
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Bar stays static on all pages -->
+      <TopBar />
+
+
+      <!-- Dynamic content from Vue Router -->
+      <router-view></router-view>
+    </div>
+  </div>
+
 </template>
+
+<script>
+// import Sidebar from '@/components/Sidebar.vue';
+import TopBar from '@/components/TopBar.vue';
+
+export default {
+  components: {
+
+    TopBar,
+  },
+};
+</script>
 
 <style>
 #app {
