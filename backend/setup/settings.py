@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "backend",
 ]
 
 REST_FRAMEWORK = {
@@ -112,6 +113,9 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+
+# AUTH_USER_MODEL = 'backend.User'
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
