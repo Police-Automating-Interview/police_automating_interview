@@ -1,36 +1,71 @@
 <template>
   <body>
-  <div class="login-container">
-    <div class="form-container">
-      <form class="form">
-        <div class="input-group">
-          <label for="username">
-            Gebruikersnaam
-          </label>
-          <input id="username" type="text" placeholder="Gebruikersnaam">
-        </div>
-        <div class="input-group">
-          <label for="password">
-            Wachtwoord
-          </label>
-          <input id="password" type="password" placeholder="**********">
-        </div>
-        <div class="submit-container">
-          <button type="submit">
-            Inloggen
-          </button>
-        </div>
-      </form>
+    <div class="login-container">
+      <div class="form-container">
+        <!-- Updated form tag to include method and event listener for submit -->
+        <form class="form" @submit.prevent="login">
+          <div class="input-group">
+            <label for="username">
+              Gebruikersnaam
+            </label>
+            <!-- Added v-model to bind username -->
+            <input id="username" type="text" placeholder="Gebruikersnaam" v-model="username">
+          </div>
+          <div class="input-group">
+            <label for="password">
+              Wachtwoord
+            </label>
+            <!-- Added v-model to bind password -->
+            <input id="password" type="password" placeholder="**********" v-model="password">
+          </div>
+          <div class="submit-container">
+            <!-- Changed button type to submit -->
+            <button type="submit">
+              Inloggen
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-</body>
+  </body>
 </template>
 
 <script>
+import axios from 'axios';
+import useAuth from '@/composables/useAuth';
+
 export default {
-  name: 'LoginView'
+  name: 'LoginView',
+  data() {
+    return {
+      username: '',
+      password: '',
+      errors: ''
+    };
+  },
+  methods: {
+    login() {
+      const { login: setLogin } = useAuth();  // Accessing the login method from useAuth
+      axios.post('http://localhost:8000/api/login/', {
+        username: this.username,
+        password: this.password
+      })
+      .then(response => {
+        console.log('Complete response:', response);
+        console.log('Login successful:', response.data);
+        setLogin();  // Update the global state to reflect the user is authenticated
+        this.$router.push('/analytics');
+      })
+      .catch(error => {
+        console.error('Login error:', error.response.data);
+        this.errors = error.response.data.detail || 'Failed to login. Please try again.';
+      });
+    }
+  }
 }
 </script>
+
+
 
 <style scoped>
 .login-container {
@@ -39,7 +74,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #F6F8F7; /* Dark blue, police-blue */
+  background-color: #F6F8F7; 
   color: white;
 }
 
@@ -62,7 +97,7 @@ export default {
 
 .input-group label {
   display: block;
-  color: #003E7E; /* Dark blue, police-blue */
+  color: #003E7E; 
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
@@ -84,7 +119,7 @@ export default {
 }
 
 .submit-container button {
-  background-color: #003E7E; /* Dark blue, police-blue */
+  background-color: #003E7E; 
   color: white;
   font-weight: bold;
   padding: 0.75rem 1.5rem;
@@ -94,7 +129,7 @@ export default {
 }
 
 .submit-container button:hover {
-  background-color: #002855; /* Darker shade for hover effect */
+  background-color: #002855; 
 }
 
 body {

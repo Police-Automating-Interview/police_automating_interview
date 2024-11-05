@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+import useAuth  from '@/composables/useAuth'
 
 
 
@@ -28,7 +29,11 @@ const routes = [
   {
     path: '/analytics',
     name: 'analytics',
-    component: AnalyticsView
+    component: AnalyticsView,
+    meta: {
+      requiresAuth: true
+    }
+
   },
   {
     path: '/settings',
@@ -38,9 +43,20 @@ const routes = [
 
 ]
 
+
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const { state } = useAuth();
+  if (to.meta.requiresAuth && !state.isAuthenticated) {
+    next({ path: '/login' });
+  } else {
+    next();
+  }
+});
 
 export default router

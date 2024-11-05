@@ -1,20 +1,27 @@
 <template>
   <body>
   <nav class="navbar">
-    <h2>Politie Dashboard</h2> <!-- Translated "Dashboard" to Dutch -->
+    <h2>Politie Dashboard</h2> 
     <ul class="nav-links">
       <li><router-link to="/">Home</router-link></li>
-      <li><router-link to="/analytics">Analyse</router-link></li> <!-- Translated "Analytics" to Dutch -->
-      <li><router-link to="/ai">AI Functie</router-link></li> <!-- Translated "AI Feature" to Dutch -->
-      <li><router-link to="/settings">Instellingen</router-link></li> <!-- Translated "Settings" to Dutch -->
+      <li><router-link v-if="auth.state.isAuthenticated" to="/analytics">Analyse</router-link></li> 
+      <li><router-link v-if="auth.state.isAuthenticated" to="/ai">AI Functie</router-link></li>
+      <li><router-link v-if="auth.state.isAuthenticated" to="/settings">Instellingen</router-link></li> 
+      <button v-if="auth.state.isAuthenticated" @click="auth.logout">Logout</button>
     </ul>
   </nav>
   </body>
 </template>
 
 <script>
+import useAuth from '@/composables/useAuth';
+
 export default {
   name: 'NavBar',
+  setup() {
+    const auth = useAuth();
+    return { auth };
+  }
 };
 </script>
 
@@ -22,26 +29,26 @@ export default {
 .navbar {
   background-color: #003E7E;
   color: white;
-  padding: 10px 20px; /* Adjusted padding for a balanced appearance */
-  display: flex; /* Makes the navbar flex container */
-  align-items: center; /* Centers the items vertically */
-  justify-content: space-between; /* Separates title and links */
+  padding: 10px 20px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
 }
 
 .navbar h2 {
-  color: #F6F8F7;  /* Light color for contrast */
-  margin: 0; /* Removes default margin */
+  color: #F6F8F7;  
+  margin: 0; 
 }
 
 .nav-links {
-  display: flex; /* Aligns links horizontally */
-  list-style-type: none; /* Removes bullet points */
-  margin: 0; /* Removes default margin */
-  padding: 0; /* Removes default padding */
+  display: flex; 
+  list-style-type: none; 
+  margin: 0; 
+  padding: 0; 
 }
 
 .nav-links li {
-  margin: 0 10px; /* Adds horizontal margin for separation */
+  margin: 0 10px; 
 }
 
 .nav-links li:hover{
