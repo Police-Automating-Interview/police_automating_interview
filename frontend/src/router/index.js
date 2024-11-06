@@ -3,13 +3,14 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import AnalyticsView from '@/views/AnalyticsView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+import AIView from '@/views/AIView.vue'
 import useAuth  from '@/composables/useAuth'
 
 
 
 const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'login',
     component: LoginView
   },
@@ -39,6 +40,11 @@ const routes = [
     path: '/settings',
     name: 'settings',
     component: SettingsView
+  },
+  {
+    path: '/ai',
+    name: 'ai',
+    component: AIView
   }
 
 ]

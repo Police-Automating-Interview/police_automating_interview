@@ -3,11 +3,10 @@
   <nav class="navbar">
     <h2>Politie Dashboard</h2> 
     <ul class="nav-links">
-      <li><router-link to="/">Home</router-link></li>
       <li><router-link v-if="auth.state.isAuthenticated" to="/analytics">Analyse</router-link></li> 
       <li><router-link v-if="auth.state.isAuthenticated" to="/ai">AI Functie</router-link></li>
       <li><router-link v-if="auth.state.isAuthenticated" to="/settings">Instellingen</router-link></li> 
-      <button v-if="auth.state.isAuthenticated" @click="auth.logout">Logout</button>
+      <button v-if="auth.state.isAuthenticated" @click="handleLogout">Logout</button>
     </ul>
   </nav>
   </body>
@@ -15,14 +14,24 @@
 
 <script>
 import useAuth from '@/composables/useAuth';
+import { useRouter } from 'vue-router';
 
 export default {
-  name: 'NavBar',
   setup() {
+    const router = useRouter();
     const auth = useAuth();
-    return { auth };
+
+    function handleLogout() {
+      auth.logout(); // this will update isAuthenticated to false
+      router.push('/login').catch(err => {
+        // Handle errors if the router fails to navigate
+        console.error("Router navigation failed:", err);
+      });
+    }
+
+    return {auth ,handleLogout };
   }
-};
+}
 </script>
 
 <style scoped>

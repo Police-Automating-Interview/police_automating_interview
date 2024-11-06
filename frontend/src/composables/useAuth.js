@@ -14,6 +14,7 @@ function login() {
 // Function to simulate logout
 function logout() {
   state.isAuthenticated = false;  // Set isAuthenticated to false when user logs out
+  
 }
 
 // The function exported here can be imported in any component
