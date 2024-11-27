@@ -39,12 +39,18 @@ const routes = [
   {
     path: '/settings',
     name: 'settings',
-    component: SettingsView
+    component: SettingsView,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/ai',
     name: 'ai',
-    component: AIView
+    component: AIView,
+    meta: {
+      requiresAuth: true
+    }
   }
 
 ]
