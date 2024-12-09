@@ -5,13 +5,21 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: s1t2e3f4an3101/police_interview:backend
     container_name: django-app
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
-    env_file:
-      - .env
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: ${DJANGO_DEBUG}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
     depends_on:
       - db
 
@@ -19,6 +27,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: s1t2e3f4an3101/police_interview:frontend
     container_name: vue-app
     ports:
       - "3000:80"
@@ -28,8 +37,10 @@ services:
   db:
     image: postgres:13
     container_name: postgres-db
-    env_file:
-      - .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - "5432:5432"
     volumes:
