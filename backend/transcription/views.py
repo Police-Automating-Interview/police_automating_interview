@@ -3,47 +3,47 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Transcription
 import whisper
+import tempfile
+from pydub import AudioSegment
+from pydub.exceptions import CouldntDecodeError
 import os
 
 # Load Whisper model once to avoid reloading for every request
 model = whisper.load_model("base")
 
+
+
 @api_view(['POST'])
 def transcribe_audio(request):
-    """
-    Endpoint to upload an audio file, transcribe it, and save the result in the database.
-    """
     try:
-        # Ensure the request has a file
         if 'audio_file' not in request.FILES:
             return Response({'detail': 'Audio file is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-        audio_file = request.FILES['audio_file']  # Get uploaded audio file
+        audio_file = request.FILES['audio_file']
 
-        # Save the file to a temporary location for processing
-        file_path = f"temp/{audio_file.name}"
-        os.makedirs('temp', exist_ok=True)  # Ensure temp directory exists
-        with open(file_path, 'wb') as f:
-            for chunk in audio_file.chunks():
-                f.write(chunk)
+        # Use a temporary file to handle the uploaded file
+        with tempfile.NamedTemporaryFile(delete=True, suffix='.wav') as temp_audio_file:
+            try:
+                # Convert audio to wav if necessary
+                audio = AudioSegment.from_file(audio_file)
+                audio.export(temp_audio_file.name, format='wav')
+            except CouldntDecodeError:
+                return Response({'detail': 'Invalid audio file format'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Process the audio file with Whisper
-        result = model.transcribe(file_path)
-        transcription_text = result["text"]
+            temp_audio_file.flush()
 
-        # Save the transcription to the database
+            # Transcribe the audio file
+            result = model.transcribe(temp_audio_file.name)
+            transcription_text = result["text"]
+
         transcription = Transcription.objects.create(
-            # user=request.user if request.user.is_authenticated else None,
-            audio_file=audio_file,
+            audio_name=audio_file.name,
             transcription_text=transcription_text
         )
 
-        # Delete the temporary file after processing
-        os.remove(file_path)
-
         return Response({
             'id': transcription.id,
-            'audio_file': transcription.audio_file.url,
+            'audio_name': transcription.audio_name,
             'transcription_text': transcription_text,
         }, status=status.HTTP_201_CREATED)
 
