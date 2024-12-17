@@ -22,33 +22,34 @@ def transcribe_audio(request):
         audio_file = request.FILES['audio_file']
 
         # Use a temporary file to handle the uploaded file
-        with tempfile.NamedTemporaryFile(delete=True, suffix='.wav') as temp_audio_file:
-            try:
-                # Convert audio to wav if necessary
-                audio = AudioSegment.from_file(audio_file)
-                audio.export(temp_audio_file.name, format='wav')
-            except CouldntDecodeError:
-                return Response({'detail': 'Invalid audio file format'}, status=status.HTTP_400_BAD_REQUEST)
-
+        with tempfile.NamedTemporaryFile(delete=False, suffix=f".{audio_file.name.split('.')[-1]}") as temp_audio_file:
+            # Write the uploaded file to a temporary file
+            for chunk in audio_file.chunks():
+                temp_audio_file.write(chunk)
             temp_audio_file.flush()
 
             # Transcribe the audio file
             result = model.transcribe(temp_audio_file.name)
             transcription_text = result["text"]
 
+        # Clean up the temporary file
+        temp_audio_file.close()
+
         transcription = Transcription.objects.create(
-            audio_name=audio_file.name,
+            audio_file=audio_file.name,
             transcription_text=transcription_text
         )
 
         return Response({
             'id': transcription.id,
-            'audio_name': transcription.audio_name,
+            'audio_file': transcription.audio_file,
             'transcription_text': transcription_text,
         }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
+        # It's generally a good idea to log the exception details here to understand what went wrong
         return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     
 
 @api_view(['PUT'])
