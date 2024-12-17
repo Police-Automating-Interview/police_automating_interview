@@ -4,6 +4,9 @@ FROM python:3.11
 # Set the working directory in the container
 WORKDIR /app
 
+# Install ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
+
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --upgrade pip
