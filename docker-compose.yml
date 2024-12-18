@@ -12,8 +12,8 @@ services:
     volumes:
       - ./backend:/app
     environment:
-      POSTGRES_PASSWORD: 12345
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      POSTGRES_PASSWORD: ${secrets.POSTGRES_PASSWORD}
+      DJANGO_SECRET_KEY: ${secrets.DJANGO_SECRET_KEY}
       DJANGO_DEBUG: ${DJANGO_DEBUG}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
       DATABASE_NAME: ${DATABASE_NAME}
