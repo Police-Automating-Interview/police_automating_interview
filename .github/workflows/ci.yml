@@ -119,6 +119,10 @@ jobs:
             --image s1t2e3f4an/police_automating_interview:latest \
             --location ${{ secrets.ACI_REGION }} \
             --os-type Linux \
+            --ports 80 \
+            --cpu 2 \
+            --memory 4GB \
+            --restart-policy OnFailure \
             --environment-variables \
               "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
               "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" \
@@ -128,5 +132,5 @@ jobs:
               "DATABASE_USER=${{ secrets.DATABASE_USER }}" \
               "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" \
               "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" \
-              "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" \
-            --ports 80
+              "DATABASE_PORT=${{ secrets.DATABASE_PORT }}"
+            
