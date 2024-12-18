@@ -78,7 +78,8 @@ jobs:
           sudo apt-get install -y docker-compose
   
       - name: Build and push Docker images
-        env:  # Pass environment variables from secrets
+        env: # Pass environment variables from secrets
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD }}
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
