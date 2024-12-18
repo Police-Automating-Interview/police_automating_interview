@@ -12,7 +12,7 @@ services:
     volumes:
       - ./backend:/app
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: 12345
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DJANGO_DEBUG: ${DJANGO_DEBUG}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
@@ -31,10 +31,10 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: aesculapius.azurecr.io/police_interview:frontend
+    image: s1t2e3f4an3101/police_interview:frontend
     container_name: vue-app
     ports:
-      - "80:80"
+      - "3000:80"
     volumes:
       - ./frontend:/app
 
