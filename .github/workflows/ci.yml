@@ -1,28 +1,27 @@
 name: Django-Vue CI/CD Pipeline
-
+ 
 on:
   push:
     branches:
       - main
-
+ 
 jobs:
   backend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
+ 
       - name: Install dependencies
         run: |
           python -m venv .venv
           source .venv/bin/activate
           pip install -r backend/requirements.txt
-
+ 
       - name: Run Django tests
         env:  
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
@@ -37,49 +36,46 @@ jobs:
           source .venv/bin/activate
           cd backend
           python manage.py test
-
+ 
   frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+ 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
+ 
       - name: Install dependencies
         run: |
           cd frontend
           npm install
-
+ 
       - name: Build frontend
         run: |
           cd frontend
           npm run build
-
+ 
   docker-build:
     runs-on: ubuntu-latest
     needs: [backend, frontend]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-  
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-  
       - name: Set up Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
-  
       - name: Build and push Docker images
-        env: # Pass environment variables from secrets
-          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD }}
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
@@ -91,3 +87,44 @@ jobs:
         run: |
           docker-compose build
           docker-compose push
+ 
+  deploy-aci:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+ 
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+ 
+      - name: Deploy Docker Compose to ACI
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
+          DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+        run: |
+          az container create \
+            --resource-group ${{ secrets.ACI_RESOURCE_GROUP }} \
+            --name ${{ secrets.ACI_CONTAINER_GROUP }} \
+            --image s1t2e3f4an/police_automating_interview:latest \
+            --region ${{ secrets.ACI_REGION }} \
+            --environment-variables \
+              POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+              DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} \
+              DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }} \
+              DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }} \
+              DATABASE_NAME=${{ secrets.DATABASE_NAME }} \
+              DATABASE_USER=${{ secrets.DATABASE_USER }} \
+              DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+              DATABASE_HOST=${{ secrets.DATABASE_HOST }} \
+              DATABASE_PORT=${{ secrets.DATABASE_PORT }} \
+            --ports 80
