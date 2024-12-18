@@ -48,11 +48,15 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{secrets.AZURE_URL}}
     permissions:
-      id-token: write #This is required for requesting the JWT
-
+      id-token: write
     steps:
+      - name: Deploy
+        env:
+          AZURE_URL: ${{ secrets.AZURE_URL }}
+        run: |
+          echo "Deploying to $AZURE_URL"
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
@@ -61,13 +65,11 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
       - name: Login to Azure
         run: |
-         az login 
-         AZURE_EMAIL=${{secrets.AZURE_EMAIL}}
-         AZURE_PASSWORD=${{secrets.AZURE_PASSWORD}}
-         
+          az login 
+          AZURE_EMAIL=${{ secrets.AZURE_EMAIL }}
+          AZURE_PASSWORD=${{ secrets.AZURE_PASSWORD }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
@@ -75,4 +77,3 @@ jobs:
         with:
           app-name: 'police-vs-nl'
           slot-name: 'Production'
-          
