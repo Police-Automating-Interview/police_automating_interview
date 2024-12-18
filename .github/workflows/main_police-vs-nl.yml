@@ -70,6 +70,7 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_59D981EA147E4AC1A07D1247B6ABA95B }}
           username: ${{secrets.AZURE_EMAIL}}
           password: ${{secrets.AZURE_PASSWORD}}
+        run: az login
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
