@@ -121,7 +121,7 @@ jobs:
             --os-type Linux \
             --ports 80 \
             --cpu 1 \
-            --memory 1GB \
+            --memory 1 \
             --restart-policy OnFailure \
             --environment-variables \
               "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
