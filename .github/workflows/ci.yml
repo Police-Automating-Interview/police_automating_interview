@@ -120,8 +120,8 @@ jobs:
             --location ${{ secrets.ACI_REGION }} \
             --os-type Linux \
             --ports 80 \
-            --cpu 2 \
-            --memory 4GB \
+            --cpu 1 \
+            --memory 1GB \
             --restart-policy OnFailure \
             --environment-variables \
               "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
