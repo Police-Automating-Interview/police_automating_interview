@@ -116,7 +116,7 @@ jobs:
           az container create \
             --resource-group ${{ secrets.ACI_RESOURCE_GROUP }} \
             --name ${{ secrets.ACI_CONTAINER_GROUP }} \
-            --image s1t2e3f4an/police_automating_interview:latest \
+            --image s1t2e3f4an3101/police_interview:latest \
             --location ${{ secrets.ACI_REGION }} \
             --os-type Linux \
             --ports 80 \
