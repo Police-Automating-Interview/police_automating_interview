@@ -118,6 +118,7 @@ jobs:
             --name ${{ secrets.ACI_CONTAINER_GROUP }} \
             --image s1t2e3f4an/police_automating_interview:latest \
             --location ${{ secrets.ACI_REGION }} \
+            --os-type Linux \
             --environment-variables \
               "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
               "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" \
